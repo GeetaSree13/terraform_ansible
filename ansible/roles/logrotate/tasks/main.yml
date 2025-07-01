@@ -1,4 +1,9 @@
-- name: Configure hourly logrotate for /log
+- name: Ensure logrotate is installed
+  package:
+    name: logrotate
+    state: present
+
+- name: Hourly logrotate rule for /log
   copy:
     dest: /etc/logrotate.d/custom_log
     content: |
@@ -9,8 +14,4 @@
           notifempty
           compress
           create 0640 root root
-          sharedscripts
-          postrotate
-              systemctl reload rsyslog >/dev/null 2>&1 || true
-          endscript
       }

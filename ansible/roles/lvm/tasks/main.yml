@@ -1,72 +1,56 @@
----
-- name: Install LVM2 tools
-  become: true
+# ---------- install tools ----------
+- name: Ensure LVM packages are present
   package:
     name: lvm2
     state: present
 
-- name: Create a new partition on /dev/sdb
+# ---------- partition disk ----------
+- name: Create GPT + single partition on {{ lvm_disk }}
   parted:
-    device: /dev/sdb
+    device: "{{ lvm_disk }}"
     number: 1
+    label: gpt
     state: present
     part_type: primary
-    fs_type: ext4
+    fs_type: linux-lvm
     resize: yes
 
+# ---------- LVM pv/vg ----------
 - name: Create physical volume
-  become: true
-  command: pvcreate /dev/sdb1
-  args:
-    creates: /dev/sdb1
+  command: pvcreate "{{ lvm_disk }}1"
+  args: { creates: "/dev/disk/by-id/dm-name-{{ lvm_vg }}" }
 
 - name: Create volume group
-  become: true
-  command: vgcreate vg_data /dev/sdb1
-  args:
-    creates: /dev/vg_data
+  command: vgcreate "{{ lvm_vg }}" "{{ lvm_disk }}1"
+  args: { creates: "/dev/{{ lvm_vg }}" }
 
+# ---------- logical volumes ----------
 - name: Create logical volumes
-  become: true
   lvol:
-    vg: vg_data
-    lv: "{{ item.name }}"
+    vg:  "{{ lvm_vg }}"
+    lv:  "{{ item.name }}"
     size: "{{ item.size }}"
-  loop:
-    - { name: data, size: 30g }
-    - { name: log, size: 10g }
-    - { name: archive, size: 10g }
+  loop: "{{ lvm_volumes }}"
 
-- name: Format logical volumes with ext4
-  become: true
+# ---------- format & mount ----------
+- name: Format ext4 on LVs
   filesystem:
     fstype: ext4
-    dev: "/dev/vg_data/{{ item }}"
-  loop:
-    - data
-    - log
-    - archive
+    dev: "/dev/{{ lvm_vg }}/{{ item.name }}"
+  loop: "{{ lvm_volumes }}"
 
 - name: Create mount points
-  become: true
   file:
-    path: "/{{ item }}"
+    path: "{{ item.mount }}"
     state: directory
     mode: '0755'
-  loop:
-    - data
-    - log
-    - archive
+  loop: "{{ lvm_volumes }}"
 
-- name: Mount volumes
-  become: true
+- name: Mount & persist
   mount:
-    path: "/{{ item }}"
-    src: "/dev/vg_data/{{ item }}"
+    path: "{{ item.mount }}"
+    src:  "/dev/{{ lvm_vg }}/{{ item.name }}"
     fstype: ext4
-    state: mounted
     opts: defaults
-  loop:
-    - data
-    - log
-    - archive
+    state: mounted
+  loop: "{{ lvm_volumes }}"

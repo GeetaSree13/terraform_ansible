@@ -1,3 +1,6 @@
+lvm_disk: /dev/sdb
+lvm_vg:   vg_data
+
 lvm_volumes:
   - { name: "data",    size: "30G" }
   - { name: "log",     size: "10G" }
