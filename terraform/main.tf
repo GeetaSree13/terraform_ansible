@@ -41,10 +41,6 @@ resource "google_compute_instance" "rocky_vm" {
   tags = var.tags
 }
 
-output "instance_ip" {
-  value = google_compute_instance.rocky_vm.network_interface[0].access_config[0].nat_ip
-}
-
 # Auto‑generate Ansible inventory with the fresh external IP
 resource "null_resource" "generate_inventory" {
   provisioner "local-exec" {
