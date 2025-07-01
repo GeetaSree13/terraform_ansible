@@ -1,29 +1,72 @@
+---
+- name: Install LVM2 tools
+  become: true
+  package:
+    name: lvm2
+    state: present
+
+- name: Create a new partition on /dev/sdb
+  parted:
+    device: /dev/sdb
+    number: 1
+    state: present
+    part_type: primary
+    fs_type: ext4
+    resize: yes
+
 - name: Create physical volume
-  command: pvcreate /dev/sdb
+  become: true
+  command: pvcreate /dev/sdb1
+  args:
+    creates: /dev/sdb1
 
 - name: Create volume group
-  command: vgcreate vg_data /dev/sdb
+  become: true
+  command: vgcreate vg_data /dev/sdb1
+  args:
+    creates: /dev/vg_data
 
 - name: Create logical volumes
-  command: >
-    lvcreate -L {{ item.size }} -n {{ item.name }} vg_data
-  loop: "{{ lvm_volumes }}"
+  become: true
+  lvol:
+    vg: vg_data
+    lv: "{{ item.name }}"
+    size: "{{ item.size }}"
+  loop:
+    - { name: data, size: 30g }
+    - { name: log, size: 10g }
+    - { name: archive, size: 10g }
 
-- name: Format & mount volumes
-  block:
-    - name: Format LV
-      filesystem:
-        fstype: ext4
-        dev: "/dev/vg_data/{{ item.name }}"
-    - name: Create mount point
-      file:
-        path: "/{{ item.name }}"
-        state: directory
-    - name: Mount LV
-      mount:
-        path: "/{{ item.name }}"
-        src: "/dev/vg_data/{{ item.name }}"
-        fstype: ext4
-        opts: defaults
-        state: mounted
-  loop: "{{ lvm_volumes }}"
+- name: Format logical volumes with ext4
+  become: true
+  filesystem:
+    fstype: ext4
+    dev: "/dev/vg_data/{{ item }}"
+  loop:
+    - data
+    - log
+    - archive
+
+- name: Create mount points
+  become: true
+  file:
+    path: "/{{ item }}"
+    state: directory
+    mode: '0755'
+  loop:
+    - data
+    - log
+    - archive
+
+- name: Mount volumes
+  become: true
+  mount:
+    path: "/{{ item }}"
+    src: "/dev/vg_data/{{ item }}"
+    fstype: ext4
+    state: mounted
+    opts: defaults
+  loop:
+    - data
+    - log
+    - archive
