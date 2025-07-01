@@ -1,0 +1,29 @@
+- name: Create physical volume
+  command: pvcreate /dev/sdb
+
+- name: Create volume group
+  command: vgcreate vg_data /dev/sdb
+
+- name: Create logical volumes
+  command: >
+    lvcreate -L {{ item.size }} -n {{ item.name }} vg_data
+  loop: "{{ lvm_volumes }}"
+
+- name: Format & mount volumes
+  block:
+    - name: Format LV
+      filesystem:
+        fstype: ext4
+        dev: "/dev/vg_data/{{ item.name }}"
+    - name: Create mount point
+      file:
+        path: "/{{ item.name }}"
+        state: directory
+    - name: Mount LV
+      mount:
+        path: "/{{ item.name }}"
+        src: "/dev/vg_data/{{ item.name }}"
+        fstype: ext4
+        opts: defaults
+        state: mounted
+  loop: "{{ lvm_volumes }}"

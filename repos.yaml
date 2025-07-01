@@ -1,0 +1,15 @@
+version: 3
+repos:
+  - id: https://github.com/GeetaSree13/terraform_ansible
+    workflow: custom
+
+workflows:
+  custom:
+    plan:
+      steps:
+        - run: terraform init
+        - run: terraform plan -out=tfplan
+    apply:
+      steps:
+        - run: terraform apply tfplan
+        - run: ansible-playbook -i ansible/inventory.yml ansible/playbook.yml

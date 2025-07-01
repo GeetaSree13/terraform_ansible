@@ -1,0 +1,9 @@
+- name: Configure Rocky VM
+  hosts: rocky
+  become: yes
+  vars_files:
+    - vars.yml
+  roles:
+    - lvm
+    - logrotate
+    - cron

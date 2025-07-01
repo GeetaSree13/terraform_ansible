@@ -1,0 +1,4 @@
+lvm_volumes:
+  - { name: "data",    size: "30G" }
+  - { name: "log",     size: "10G" }
+  - { name: "archive", size: "10G" }

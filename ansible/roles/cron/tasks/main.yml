@@ -1,0 +1,5 @@
+- name: Add cron job to record time every 10 min
+  cron:
+    name: "Log time to /data"
+    minute: "*/10"
+    job: "date >> /data/time.log"
