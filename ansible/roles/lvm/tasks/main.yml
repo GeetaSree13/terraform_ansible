@@ -1,13 +1,6 @@
-# ---------- install tools ----------
-- name: Ensure LVM packages are present
-  package:
-    name: lvm2
-    state: present
-
-# ---------- partition disk ----------
-- name: Create GPT + single partition on {{ lvm_disk }}
+- name: Create partition on /dev/sdb
   parted:
-    device: "{{ lvm_disk }}"
+    device: /dev/sdb
     number: 1
     label: gpt
     state: present
@@ -15,42 +8,66 @@
     fs_type: linux-lvm
     resize: yes
 
-# ---------- LVM pv/vg ----------
 - name: Create physical volume
-  command: pvcreate "{{ lvm_disk }}1"
-  args: { creates: "/dev/disk/by-id/dm-name-{{ lvm_vg }}" }
+  command: pvcreate /dev/sdb1
+  args:
+    creates: /dev/sdb1
 
 - name: Create volume group
-  command: vgcreate "{{ lvm_vg }}" "{{ lvm_disk }}1"
-  args: { creates: "/dev/{{ lvm_vg }}" }
+  lvg:
+    vg: vg_data
+    pvs: /dev/sdb1
 
-# ---------- logical volumes ----------
-- name: Create logical volumes
+- name: Create logical volume for data
   lvol:
-    vg:  "{{ lvm_vg }}"
-    lv:  "{{ item.name }}"
-    size: "{{ item.size }}"
-  loop: "{{ lvm_volumes }}"
+    vg: vg_data
+    lv: data
+    size: 30g
 
-# ---------- format & mount ----------
-- name: Format ext4 on LVs
+- name: Create logical volume for log
+  lvol:
+    vg: vg_data
+    lv: log
+    size: 10g
+
+- name: Create logical volume for archive
+  lvol:
+    vg: vg_data
+    lv: archive
+    size: 10g
+
+- name: Format /data logical volume
   filesystem:
     fstype: ext4
-    dev: "/dev/{{ lvm_vg }}/{{ item.name }}"
-  loop: "{{ lvm_volumes }}"
+    dev: /dev/vg_data/data
 
-- name: Create mount points
-  file:
-    path: "{{ item.mount }}"
-    state: directory
-    mode: '0755'
-  loop: "{{ lvm_volumes }}"
-
-- name: Mount & persist
+- name: Mount /data logical volume
   mount:
-    path: "{{ item.mount }}"
-    src:  "/dev/{{ lvm_vg }}/{{ item.name }}"
+    path: /data
+    src: /dev/vg_data/data
     fstype: ext4
-    opts: defaults
     state: mounted
-  loop: "{{ lvm_volumes }}"
+
+- name: Format /log logical volume
+  filesystem:
+    fstype: ext4
+    dev: /dev/vg_data/log
+
+- name: Mount /log logical volume
+  mount:
+    path: /log
+    src: /dev/vg_data/log
+    fstype: ext4
+    state: mounted
+
+- name: Format /archive logical volume
+  filesystem:
+    fstype: ext4
+    dev: /dev/vg_data/archive
+
+- name: Mount /archive logical volume
+  mount:
+    path: /archive
+    src: /dev/vg_data/archive
+    fstype: ext4
+    state: mounted

@@ -41,13 +41,15 @@ resource "google_compute_instance" "rocky_vm" {
   tags = var.tags
 }
 
-# Auto‑generate Ansible inventory with the fresh external IP
 resource "null_resource" "generate_inventory" {
   provisioner "local-exec" {
     command = <<EOT
-echo "[rocky]
-rocky-vm ansible_host=${google_compute_instance.rocky_vm.network_interface[0].access_config[0].nat_ip} ansible_user=${var.ssh_user} ansible_ssh_private_key_file=~/.ssh/id_rsa" > ../ansible/inventory.yml
+cat <<EOF > ../ansible/inventory.yml
+[rocky]
+rocky-vm ansible_host=${google_compute_instance.rocky_vm.network_interface[0].access_config[0].nat_ip} ansible_user=${var.ssh_user} ansible_ssh_private_key_file=/home/atlantis/.ssh/id_rsa
+EOF
 EOT
   }
   depends_on = [google_compute_instance.rocky_vm]
 }
+

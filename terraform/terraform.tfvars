@@ -13,7 +13,5 @@ additional_disk_type = "pd-ssd"
 
 network              = "default"
 tags                 = ["rocky"]
-ssh_user             = "rocky"
-ssh_pub_key_path     = "id_rsa.pub"
-
-##
+ssh_user             = "atlantis"
+ssh_pub_key_path     = "terraform/id_rsa.pub"

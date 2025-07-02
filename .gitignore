@@ -14,6 +14,7 @@ crash.log
 # Ignore .terraform directory (provider binaries, plugins, etc.)
 .terraform/
 .terraform.*
+terraform/id_rsa
 
 # Ignore override files and backup files
 override.tf

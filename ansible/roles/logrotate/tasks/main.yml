@@ -1,17 +1,12 @@
-- name: Ensure logrotate is installed
-  package:
-    name: logrotate
-    state: present
-
-- name: Hourly logrotate rule for /log
+- name: Configure logrotate for /log
   copy:
-    dest: /etc/logrotate.d/custom_log
+    dest: /etc/logrotate.d/logdir
     content: |
       /log/*.log {
-          hourly
-          rotate 24
-          missingok
-          notifempty
-          compress
-          create 0640 root root
+        hourly
+        missingok
+        rotate 24
+        compress
+        notifempty
+        create 0640 root root
       }
