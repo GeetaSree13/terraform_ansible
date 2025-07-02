@@ -7,6 +7,5 @@
         missingok
         rotate 24
         compress
-        notifempty
         create 0640 root root
       }

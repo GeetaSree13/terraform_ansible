@@ -12,4 +12,5 @@ workflows:
     apply:
       steps:
         - run: terraform apply tfplan
+        - run: bash ./scripts/gen_inventory.sh
         - run: ansible-playbook -i ansible/inventory.yml ansible/playbook.yml

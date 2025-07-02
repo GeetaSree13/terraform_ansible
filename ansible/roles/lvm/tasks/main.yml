@@ -1,12 +1,19 @@
-- name: Create partition on /dev/sdb
+- name: Create GPT partition table
+  parted:
+    device: /dev/sdb
+    label: gpt
+
+- name: Create primary partition on /dev/sdb
   parted:
     device: /dev/sdb
     number: 1
-    label: gpt
-    state: present
     part_type: primary
-    fs_type: linux-lvm
-    resize: yes
+    state: present
+    part_start: 1MiB
+    part_end: 100%
+
+- name: Set LVM flag on partition
+  command: parted /dev/sdb set 1 lvm on
 
 - name: Create physical volume
   command: pvcreate /dev/sdb1
@@ -34,7 +41,13 @@
   lvol:
     vg: vg_data
     lv: archive
-    size: 10g
+    size: 9g
+
+# --- /data Mount ---
+- name: Ensure /data directory exists
+  file:
+    path: /data
+    state: directory
 
 - name: Format /data logical volume
   filesystem:
@@ -42,11 +55,17 @@
     dev: /dev/vg_data/data
 
 - name: Mount /data logical volume
-  mount:
+  ansible.posix.mount:
     path: /data
     src: /dev/vg_data/data
     fstype: ext4
     state: mounted
+
+# --- /log setup ---
+- name: Ensure /log directory exists
+  file:
+    path: /log
+    state: directory
 
 - name: Format /log logical volume
   filesystem:
@@ -54,11 +73,25 @@
     dev: /dev/vg_data/log
 
 - name: Mount /log logical volume
-  mount:
+  ansible.posix.mount:
     path: /log
     src: /dev/vg_data/log
     fstype: ext4
     state: mounted
+
+- name: Create dummy log file in /log for logrotate testing
+  file:
+    path: /log/test.log
+    state: touch
+    owner: root
+    group: root
+    mode: '0644'
+
+# --- /archive setup ---
+- name: Ensure /archive directory exists
+  file:
+    path: /archive
+    state: directory
 
 - name: Format /archive logical volume
   filesystem:
@@ -66,8 +99,9 @@
     dev: /dev/vg_data/archive
 
 - name: Mount /archive logical volume
-  mount:
+  ansible.posix.mount:
     path: /archive
     src: /dev/vg_data/archive
     fstype: ext4
     state: mounted
+

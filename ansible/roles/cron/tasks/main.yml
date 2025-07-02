@@ -1,6 +1,6 @@
-- name: Cron job: append time every 10 min
+- name: Add cron job to write time to /data/time.log every 10 minutes
   cron:
-    name: "Log time to /data/time.log"
+    name: "Log current time to /data/time.log"
     minute: "*/10"
-    job: "date >> /data/time.log"
-    
+    job: "date '+\\%F \\%T' >> /data/time.log"
+    user: root
