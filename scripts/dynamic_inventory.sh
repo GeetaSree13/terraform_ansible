@@ -12,5 +12,3 @@ all:
       ansible_user: rocky
       ansible_ssh_private_key_file: "/tmp/id_rsa"
 EOF    
-
-##
