@@ -3,7 +3,7 @@ region               = "asia-southeast1"
 zone                 = "asia-southeast1-a"
 credentials_file     = "/gcp-creds/creds.json"
 
-instance_name        = "rocky-vm1"
+instance_name        = "rocky-vm2"
 machine_type         = "e2-medium"
 boot_disk_image      = "rocky-linux-cloud/rocky-linux-8"
 boot_disk_size       = 20
