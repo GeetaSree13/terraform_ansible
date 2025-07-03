@@ -1,7 +1,5 @@
 version: 3
 
-workflow: custom
-
 workflows:
   custom:
     plan:
@@ -14,3 +12,7 @@ workflows:
         - run: ./scripts/dynamic_inventory.sh
         - run: cat ansible/inventory.yml
         - run: ansible-playbook -i ansible/inventory.yml ansible/playbook.yml
+
+repos:
+  - id: /.*/
+    workflow: custom
