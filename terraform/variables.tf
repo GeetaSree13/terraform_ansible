@@ -18,6 +18,12 @@ variable "tags" {
   type        = list(string)
   description = "Network tags"
 }
+variable "google_credentials" {
+  type        = string
+  description = "Path to GCP credentials file"
+  sensitive = true
+  
+}
 
 variable "ssh_user"             { description = "OS user (e.g. rocky)" }
 variable "ssh_pub_key_path"     { description = "Path to .pub key" }
