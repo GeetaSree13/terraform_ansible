@@ -1,5 +1,4 @@
 #!/bin/bash
-echo "$PRIVATE_SSH_KEY_CONTENT" > /tmp/id_rsa
 chmod 600 /tmp/id_rsa
 external_ip=$(terraform chdir=terraform output -raw vm_ip)
 
