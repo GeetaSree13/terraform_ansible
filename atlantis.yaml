@@ -1,8 +1,6 @@
 version: 3
 
-repos:
-  - id: https://github.com/GeetaSree13/terraform_ansible
-    workflow: custom
+workflow: custom
 
 workflows:
   custom:
