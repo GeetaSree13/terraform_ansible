@@ -67,16 +67,3 @@ resource "google_compute_firewall" "allowing-https" {
     }
 }
 
-resource "google_compute_firewall" "allowing-atlantis" {
-  name    = "allowing-atlantis"
-  network = "default"
-
-  allow {
-    protocol = "tcp"
-    ports    = ["4141"]
-  }
-
-  direction     = "INGRESS"
-  source_ranges = ["0.0.0.0/0"]
-  target_tags   = ["atlantis-server"]
-}
