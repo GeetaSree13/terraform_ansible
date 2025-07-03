@@ -5,14 +5,7 @@ provider "google" {
   credentials = file(var.credentials_file)
 }
 
-resource "google_compute_disk" "extra_disk" {
-  name  = "extra-disks"
-  type  = var.additional_disk_type  # e.g., "pd-ssd"
-  zone  = var.zone
-  size  = var.additional_disk_size  # e.g., 50
-}
-
-resource "google_compute_instance" "rocky_vm" {
+resource "google_compute_instance" "rocky_vms" {
   name         = var.instance_name
   machine_type = var.machine_type
   zone         = var.zone
@@ -24,11 +17,6 @@ resource "google_compute_instance" "rocky_vm" {
     }
   }
 
-  attached_disk {
-    source      = google_compute_disk.extra_disk.id
-    device_name = "extra-disk"
-  }
-
   network_interface {
     network       = var.network
     access_config {}
@@ -38,5 +26,43 @@ resource "google_compute_instance" "rocky_vm" {
     ssh-keys = "${var.ssh_user}:${file(var.ssh_pub_key_path)}"
   }
 
+    
   tags = var.tags
+
+}
+
+resource "google_compute_firewall" "allowing-http" {
+    name    = "allowing-http"
+    network = "default"
+
+    allow {
+        protocol = "tcp"
+        ports    = ["80"]
+    }
+    direction     = "INGRESS"
+    source_ranges = ["0.0.0.0/0"]
+    target_tags   = ["http-server"]
+
+    lifecycle {
+      create_before_destroy = true
+    }
+
+}
+
+resource "google_compute_firewall" "allowing-https" {
+    name = "allowing-https"
+    network = "default"
+
+    allow {
+      protocol = "tcp"
+      ports = ["443"]
+    }
+
+    direction     = "INGRESS"
+    source_ranges = ["0.0.0.0/0"]
+    target_tags   = ["https-server"]
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
