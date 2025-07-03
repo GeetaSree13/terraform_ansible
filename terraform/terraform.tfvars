@@ -15,4 +15,3 @@ network              = "default"
 tags                 = ["rocky","http-server", "https-server","allowing-atlantis"]
 ssh_user             = "rocky"
 ssh_pub_key_path     = "id_rsa.pub"
-##
