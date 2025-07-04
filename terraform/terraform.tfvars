@@ -14,4 +14,4 @@ additional_disk_type = "pd-ssd"
 network              = "default"
 tags                 = ["rocky","http-server", "https-server"]
 ssh_user             = "penumarthigeeta"
-ssh_pub_key_path     = "id_rsa.pub"
+ssh_pub_key_path     = "/atlantis/ssh_key.pub"
