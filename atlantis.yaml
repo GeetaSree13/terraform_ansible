@@ -4,19 +4,19 @@ workflows:
   custom:
     plan:
       steps:
-        - run: terraform -chdir=terraform init
-        - run: terraform -chdir=terraform plan -out=tfplan
+        - run: terraform init
+        - run: terraform plan -out=tfplan
     apply:
       steps:
-        - run: terraform -chdir=terraform apply tfplan
+        - run: terraform apply tfplan
         - run: ./scripts/dynamic_inventory.sh
         - run: cat ansible/inventory.yml
         - run: ansible-playbook -i ansible/inventory.yml ansible/playbook.yml
 
 projects:
   - name: vm_project
-    dir: terraform
+    dir: .
     workflow: custom
     autoplan:
       enabled: true
-      when_modified: ["*.tf", "../scripts/*", "../ansible/*"]
+      when_modified: ["*.tf", "scripts/*", "ansible/*"]
