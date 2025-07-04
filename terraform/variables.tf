@@ -1,7 +1,6 @@
 variable "project_id"           { description = "GCP project ID" }
 variable "region"               { description = "GCP region" }
 variable "zone"                 { description = "GCP zone" }
-variable "credentials_file"     { description = "Path to service‑account JSON" }
 
 variable "instance_name"        { description = "VM name" }
 variable "machine_type"         { description = "Machine type" }
@@ -17,6 +16,12 @@ variable "network"              { description = "VPC network name" }
 variable "tags" {
   type        = list(string)
   description = "Network tags"
+}
+variable "google_credentials" {
+  type        = string
+  description = "Path to GCP credentials file"
+  sensitive = true
+  
 }
 
 variable "ssh_user"             { description = "OS user (e.g. rocky)" }

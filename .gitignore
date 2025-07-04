@@ -21,7 +21,6 @@ override.tf.json
 *_override.tf
 *_override.tf.json
 *.backup
-
 # Ignore CLI configuration files (if present in repo)
 .terraformrc
 terraform.rc

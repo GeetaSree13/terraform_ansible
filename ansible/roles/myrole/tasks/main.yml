@@ -1,0 +1,20 @@
+---
+- name: Creating a directory
+  file:
+    path: /var/logs/app
+    state: directory
+
+- name: Creating a file    
+  file:
+    path: /var/logs/app/one.txt
+    state: touch
+
+- name: Creating a file with content
+  copy:
+    dest: /var/logs/app/one.txt
+    content: "This is a sample file created by Ansible.\n"
+    
+- name: Ensure the file has the correct permissions
+  file:       
+    path: /var/logs/app/one.txt
+    mode: '0644'
