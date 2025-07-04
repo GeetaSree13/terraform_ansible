@@ -1,8 +1,7 @@
 #!/bin/bash
 chmod 600 ../ansible/id_rsa
-cd terraform
-external_ip=$(terraform output -raw vm_ip)
-cd ..
+external_ip=$(terraform -chdir=terraform output -raw vm_ip)
+
 file="../ansible/inventory.yml"
 
 cat <<EOF > $file
