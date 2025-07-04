@@ -15,7 +15,7 @@ workflows:
 
 projects:
   - name: vm_project
-    dir: .
+    dir: terraform
     workflow: custom
     autoplan:
       enabled: true
