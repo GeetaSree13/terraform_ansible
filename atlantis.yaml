@@ -16,5 +16,3 @@ workflows:
         - run: ../scripts/dynamic_inventory.sh
         - run: cat ../ansible/inventory.yml
         - run: ansible-playbook -i ../ansible/inventory.yml ../ansible/playbook.yml
-
-##
