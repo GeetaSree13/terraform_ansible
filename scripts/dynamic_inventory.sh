@@ -78,3 +78,7 @@ for i in {1..15}; do
   fi
 done
 
+echo ">>> Running Ansible Playbook..."
+ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i ansible/hosts ansible/playbook.yml
+ 
+echo " Ansible execution completed."
