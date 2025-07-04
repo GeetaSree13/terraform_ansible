@@ -1,7 +1,6 @@
 variable "project_id"           { description = "GCP project ID" }
 variable "region"               { description = "GCP region" }
 variable "zone"                 { description = "GCP zone" }
-variable "google_credentials"     { description = "Path to service‑account JSON" }
 
 variable "instance_name"        { description = "VM name" }
 variable "machine_type"         { description = "Machine type" }
