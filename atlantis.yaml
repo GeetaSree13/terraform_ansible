@@ -3,9 +3,6 @@ version: 3
 projects:
   - dir: terraform
     workflow: custom
-    autoplan:
-      enabled: true
-      when_modified: ["**/*.tf", "**/*.sh", "**/*.yml"]
 
 workflows:
   custom:
