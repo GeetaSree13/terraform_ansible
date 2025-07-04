@@ -1,5 +1,12 @@
 version: 3
 
+projects:
+  - dir: terraform
+    workflow: custom
+    autoplan:
+      enabled: true
+      when_modified: ["*.tf", "scripts/*", "ansible/*"]
+
 workflows:
   custom:
     plan:
@@ -13,10 +20,3 @@ workflows:
         - run: cat ansible/inventory.yml
         - run: ansible-playbook -i ansible/inventory.yml ansible/playbook.yml
 
-projects:
-  - name: vm_project
-    dir: terraform
-    workflow: custom
-    autoplan:
-      enabled: true
-      when_modified: ["*.tf", "scripts/*", "ansible/*"]
