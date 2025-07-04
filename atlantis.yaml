@@ -12,3 +12,11 @@ workflows:
         - run: ./scripts/dynamic_inventory.sh
         - run: cat ansible/inventory.yml
         - run: ansible-playbook -i ansible/inventory.yml ansible/playbook.yml
+
+projects:
+  - name: myproject
+    dir: terraform
+    workflow: custom
+    autoplan:
+      enabled: true
+      when_modified: ["*.tf", "../scripts/*", "../ansible/*"]
