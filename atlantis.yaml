@@ -14,7 +14,7 @@ workflows:
         - run: ansible-playbook -i ansible/inventory.yml ansible/playbook.yml
 
 projects:
-  - name: myproject
+  - name: vm_project
     dir: terraform
     workflow: custom
     autoplan:

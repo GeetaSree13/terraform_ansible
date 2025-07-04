@@ -2,7 +2,7 @@ provider "google" {
   project     = var.project_id
   region      = var.region
   zone        = var.zone
-  credentials = var.google_credentials
+  credentials = file(var.google_credentials)
 }
 
 resource "google_compute_instance" "rocky_vms" {
