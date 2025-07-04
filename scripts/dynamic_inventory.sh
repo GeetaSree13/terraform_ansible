@@ -2,12 +2,12 @@
 chmod 600 ../ansible/id_rsa
 external_ip=$(terraform output -raw vm_ip)
 
-file="../ansible/inventory.yml"
-cat <<EOF > ../ansible/inventory.yml
-all:
-    hosts:
-        rocky:
-            ansible_host: $external_ip
-            ansible_user: penumarthigeetasri
-            ansible_ssh_private_key_file: ../ansible/id_rsa
-EOF            
+inventory_file="../ansible/inventory.yml"
+
+echo "all:" > "$inventory_file"
+echo "  hosts:" >> "$inventory_file"
+echo "    rocky-vm:" >> "$inventory_file"
+echo "      ansible_host: $external_ip" >> "$inventory_file"
+echo "      ansible_user: penumarthigeetasri" >> "$inventory_file"
+echo "      ansible_ssh_private_key_file: ../ansible/id_rsa" >> "$inventory_file"
+echo "      ansible_ssh_common_args: '-o StrictHostKeyChecking=no'" >> "$inventory_file"
