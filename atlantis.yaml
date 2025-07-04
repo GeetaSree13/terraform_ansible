@@ -2,10 +2,10 @@ version: 3
 
 projects:
   - dir: terraform
-    workflow: custom
+    workflow: project
 
 workflows:
-  custom:
+  project:
     plan:
       steps:
         - run: terraform init
