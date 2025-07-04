@@ -1,7 +1,7 @@
 project_id           = "tonal-benefit-462606-b8"
 region               = "asia-southeast1"
 zone                 = "asia-southeast1-a"
-credentials_file     = "/atlantis/creds1.json"
+google_credentials     = "/atlantis/creds1.json"
 
 instance_name        = "rocky-vm2"
 machine_type         = "e2-medium"
