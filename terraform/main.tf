@@ -23,8 +23,10 @@ resource "google_compute_instance" "rocky_vms" {
   }
 
   metadata = {
-  ssh-keys = "penumarthigeetasri:${file("/Users/penumarthigeeta/.ssh/new_id_rsa.pub")}"
+  ssh-keys = "penumarthigeetasri:${file("id_rsa.pub")}"
 }
+
+
     
   tags = var.tags
 
