@@ -5,7 +5,7 @@ projects:
     workflow: custom
     autoplan:
       enabled: true
-      when_modified: ["terraform/*.tf", "scripts/*", "ansible/*"]
+      when_modified: ["**/*.tf", "**/*.sh", "**/*.yml"]
 
 workflows:
   custom:
